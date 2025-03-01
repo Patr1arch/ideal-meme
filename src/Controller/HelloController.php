@@ -17,8 +17,14 @@ class HelloController extends AbstractController
 
     }
 
+    #[Route(path: '/')]
+    public function index(): Response
+    {
+        return $this->redirectToRoute('app_login');
+    }
+
     #[Route(path: '/hello', methods: ['GET'])]
-    public function index(Request $request): Response
+    public function helloWorld(Request $request): Response
     {
         return new Response('Hello World!' . $request->getClientIp());
     }

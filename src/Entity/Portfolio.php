@@ -22,6 +22,9 @@ class Portfolio
     #[ORM\Column]
     private ?float $balance = null;
 
+    #[ORM\Column(name: 'freeze_balance')]
+    private ?float $freezeBalance = null;
+
     /**
      * @var Collection<int, Depositary>
      */
@@ -62,12 +65,35 @@ class Portfolio
         return $this;
     }
 
+    public function addBalance(float $sum): static
+    {
+        $this->balance += $sum;
+
+        return $this;
+    }
+
+    public function subBalance(float $sum): static
+    {
+        $this->balance -= $sum;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, Depositary>
      */
     public function getDepositaries(): Collection
     {
         return $this->depositaries;
+    }
+
+    public function getDepositaryByStock(Stock $stock): ?Depositary
+    {
+        return $this->depositaries->findFirst(
+            function (int $key, Depositary $depositary) use ($stock) {
+                return $depositary->getStock()->getId() === $stock->getId();
+            }
+        );
     }
 
     public function addDepositary(Depositary $depositary): static
@@ -91,4 +117,35 @@ class Portfolio
 //
 //        return $this;
 //    }
+
+    public function getFreezeBalance(): ?float
+    {
+        return $this->freezeBalance;
+    }
+
+    public function setFreezeBalance(float $freezeBalance): static
+    {
+        $this->freezeBalance = $freezeBalance;
+
+        return $this;
+    }
+
+    public function addFreezeBalance(float $sum): static
+    {
+        $this->freezeBalance += $sum;
+
+        return $this;
+    }
+
+    public function subFreezeBalance(float $sum): static
+    {
+        $this->freezeBalance -= $sum;
+
+        return $this;
+    }
+
+    public function getAvailableBalance(): ?float
+    {
+        return $this->balance - $this->freezeBalance;
+    }
 }
