@@ -28,7 +28,7 @@ class Portfolio
     /**
      * @var Collection<int, Depositary>
      */
-    #[ORM\OneToMany(targetEntity: Depositary::class, mappedBy: 'portfolio')]
+    #[ORM\OneToMany(targetEntity: Depositary::class, mappedBy: 'portfolio', cascade: ['persist', 'remove'])]
     private Collection $depositaries;
 
     public function __construct()
@@ -96,6 +96,37 @@ class Portfolio
         );
     }
 
+    public function addDepositaryQuantityByStock(Stock $stock, int $quantity): static
+    {
+        $depositary = $this->getDepositaryByStock($stock);
+
+        if (!$depositary) {
+            $depositary = (new Depositary())
+                ->setStock($stock)
+            ;
+
+            $this->addDepositary($depositary);
+        }
+
+        $depositary->addQuantity($quantity);
+
+        return $this;
+    }
+
+    public function subDepositaryQuantityByStock(Stock $stock, int $quantity): static
+    {
+        $depositary = $this->getDepositaryByStock($stock);
+
+        $depositary->subQuantity($quantity);
+        $depositary->subFreezeQuantity($quantity);
+
+        if ($depositary->getQuantity() === 0) {
+            $this->removeDepositary($depositary);
+        }
+
+        return $this;
+    }
+
     public function addDepositary(Depositary $depositary): static
     {
         if (!$this->depositaries->contains($depositary)) {
@@ -106,17 +137,12 @@ class Portfolio
         return $this;
     }
 
-//    public function removeDepositary(Depositary $depositary): static
-//    {
-//        if ($this->depositaries->removeElement($depositary)) {
-//            // set the owning side to null (unless already changed)
-//            if ($depositary->getPortfolio() === $this) {
-//                $depositary->setPortfolio(null);
-//            }
-//        }
-//
-//        return $this;
-//    }
+    private function removeDepositary(Depositary $depositary): static
+    {
+        $this->depositaries->removeElement($depositary);
+
+        return $this;
+    }
 
     public function getFreezeBalance(): ?float
     {

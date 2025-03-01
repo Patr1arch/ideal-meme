@@ -30,6 +30,7 @@ class Depositary
     public function __construct()
     {
         $this->quantity = 0;
+        $this->freezeQuantity = 0;
     }
 
     public function getId(): ?int
