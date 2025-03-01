@@ -10,7 +10,7 @@
     <div style="color: green">
         {% for app in stock.applications %}
             {% if app.action == BUY %}
-                <span>price: {{ app.price }} | quantity {{ app.quantity }} | total {{ app.quantity * app.price }}</span>
+                <span>price: {{ app.price }} | quantity {{ app.quantity }} | total {{ app.total }}</span>
             {% endif %}
         {% endfor %}
     </div>
@@ -18,7 +18,7 @@
     <div style="color: darkred">
         {% for app in stock.applications %}
             {% if app.action == SELL %}
-                <span>price: {{ app.price }} | quantity {{ app.quantity }} | total {{ app.quantity * app.price }}</span>
+                <span>price: {{ app.price }} | quantity {{ app.quantity }} | total {{ app.total }}</span>
             {% endif %}
         {% endfor %}
     </div>
