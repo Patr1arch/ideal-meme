@@ -23,6 +23,14 @@ class DealLog
     #[ORM\Column]
     private ?float $price = null;
 
+    #[ORM\ManyToOne(inversedBy: 'sellDealLogs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Portfolio $sellPortfolio = null;
+
+    #[ORM\ManyToOne(inversedBy: 'buyDealLogs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Portfolio $buyPortfolio = null;
+
     public function __construct()
     {
         $this->timestamp = new \DateTimeImmutable('now');
@@ -65,6 +73,30 @@ class DealLog
     public function setPrice(float $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getSellPortfolio(): ?Portfolio
+    {
+        return $this->sellPortfolio;
+    }
+
+    public function setSellPortfolio(?Portfolio $sellPortfolio): static
+    {
+        $this->sellPortfolio = $sellPortfolio;
+
+        return $this;
+    }
+
+    public function getBuyPortfolio(): ?Portfolio
+    {
+        return $this->buyPortfolio;
+    }
+
+    public function setBuyPortfolio(?Portfolio $buyPortfolio): static
+    {
+        $this->buyPortfolio = $buyPortfolio;
 
         return $this;
     }
